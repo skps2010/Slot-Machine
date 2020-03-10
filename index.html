@@ -27,29 +27,36 @@
 <body>
 
     <img src="./img/post.png" alt="post" style="
-			position: absolute;
-			height: 60%;
-			top: 15%;
-			left: 3%;
-    " />
+        position: absolute;
+        height: 60%;
+        top: 15%;
+        left: 3%;
+        " />
 
     <button id="casinoStart" type="button" class="btn btn-lg" style="
-      position: absolute;
-      height: 25%;
-      top: 20%;
-      left: 65%;
-      color: transparent;
-      background-color: transparent;
-      border: 0px;
-      cursor: pointer;
-    ">aaaaaaaaa</button>
+        position: absolute;
+        height: 25%;
+        top: 20%;
+        left: 65%;
+        color: transparent;
+        background-color: transparent;
+        border: 0px;
+        cursor: pointer;
+        ">aaaaaaaaa</button>
 
     <h2 id="betAmount" style="
-      position: absolute;
-      height: 25%;
-      top: 80%;
-      left: 80%;
-      ">0</h2>
+        position: absolute;
+        height: 25%;
+        top: 80%;
+        left: 80%;
+        ">0</h2>
+
+    <h2 id="winAmount" style="
+        position: absolute;
+        height: 25%;
+        top: 75%;
+        left: 80%;
+        "></h2>
 
     <!-- Slot machine example -->
     <div id="casino" style="padding-top:50px;">
@@ -93,6 +100,7 @@
         }
 
         bet = 10
+        isRunning = false
         setBet()
         let count = 0;
         const btnStart = document.querySelector('#casinoStart');
@@ -115,6 +123,7 @@
     </script>
     <script id="codeScript6">
         btnBet.addEventListener('click', () => {
+            if (isRunning) return
             Swal.fire({
                 width: '80vw',
                 text: '輸入你要下注的金額.',
@@ -123,6 +132,8 @@
                 bet = parseInt(name.value)
                 if (isNaN(bet) || bet <= 0) {
                     Swal.fire("？？？", "你必須輸入大於零的數字", "error");
+                    bet = 10
+                    setBet()
                     return
                 }
                 setBet()
@@ -130,11 +141,13 @@
         })
 
         btnStart.addEventListener('click', () => {
+            if (isRunning) return
             if (isNaN(bet) || bet <= 0) {
                 Swal.fire("？？？", "你的賭注必須為大於零的數字", "error");
                 return
             }
 
+            isRunning = true
             time1 = Math.random() * 4 + 6 | 0
             time2 = time1 + (Math.random() * 4 + 2 | 0)
             time3 = time2 + (Math.random() * 4 + 2 | 0)
@@ -154,10 +167,12 @@
                         reward = 5
                     else if (t1 < 3 && t2 < 3 && t3 < 3)
                         reward = 2
-                    else if (set.has(3) && set.has(4) && set.size() == 3)
+                    else if (set.has(3) && set.has(4) && set.size == 3)
                         reward = 3
 
                     Swal.fire(reward ? "你贏了" : "你輸了", "你獲得了＄" + reward * bet, reward ? "success" : "error");
+                    $("#winAmount").html("你上回贏了：" + reward * bet)
+                    isRunning = false
                 }, 1000);
 
             });
