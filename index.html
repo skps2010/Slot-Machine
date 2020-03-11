@@ -37,7 +37,7 @@
         position: absolute;
         height: 25%;
         top: 20%;
-        left: 65%;
+        left: 66%;
         color: transparent;
         background-color: transparent;
         border: 0px;
@@ -47,21 +47,21 @@
     <h2 id="betAmount" style="
         position: absolute;
         height: 25%;
-        top: 80%;
-        left: 80%;
+        top: 70%;
+        left: 75%;
         ">0</h2>
 
     <h2 id="winAmount" style="
         position: absolute;
         height: 25%;
-        top: 75%;
-        left: 80%;
+        top: 50%;
+        left: 75%;
         "></h2>
 
     <!-- Slot machine example -->
     <div id="casino" style="padding-top:50px;">
         <div class="content">
-            <h1>湯晚拉霸機</h1>
+            <h1>吃角子老虎機🐯</h1>
 
             <div>
                 <div id="casino1" class="slotMachine" style="margin-left: -65px;">
@@ -99,7 +99,7 @@
             $("#betAmount").html("下注：" + bet)
         }
 
-        bet = 10
+        bet = 1
         isRunning = false
         setBet()
         let count = 0;
@@ -125,14 +125,22 @@
         btnBet.addEventListener('click', () => {
             if (isRunning) return
             Swal.fire({
+                icon: 'question',
                 width: '80vw',
                 text: '輸入你要下注的金額.',
-                input: 'text'
+                input: 'range',
+                inputAttributes: {
+                    min: 1,
+                    max: 10,
+                    step: 1,
+                },
+                allowOutsideClick: false,
+                inputValue: bet,
             }).then(name => {
                 bet = parseInt(name.value)
                 if (isNaN(bet) || bet <= 0) {
                     Swal.fire("？？？", "你必須輸入大於零的數字", "error");
-                    bet = 10
+                    bet = 1
                     setBet()
                     return
                 }
@@ -170,7 +178,7 @@
                     else if (set.has(3) && set.has(4) && set.size == 3)
                         reward = 3
 
-                    Swal.fire(reward ? "你贏了" : "你輸了", "你獲得了＄" + reward * bet, reward ? "success" : "error");
+                    Swal.fire(reward ? "恭喜中獎" : "銘謝惠顧", "你獲得了＄" + reward * bet, reward ? "success" : "error");
                     $("#winAmount").html("你上回贏了：" + reward * bet)
                     isRunning = false
                 }, 1000);
