@@ -25,18 +25,28 @@
 </head>
 
 <body>
+    <button id="casinoDemo" type="button" class="btn btn-lg" style="
+        position: absolute;
+        height: 3%;
+        top: 3%;
+        left: 1%;
+        color: transparent;
+        background-color: transparent;
+        border: 0px;
+        cursor: pointer;
+        ">aaaaaaaaa</button>
 
     <img src="./img/post.png" alt="post" style="
         position: absolute;
-        height: 60%;
-        top: 15%;
-        left: 3%;
+        height: 70%;
+        top: 10%;
+        left: 5%;
         " />
 
     <button id="casinoStart" type="button" class="btn btn-lg" style="
         position: absolute;
-        height: 25%;
-        top: 20%;
+        height: 30%;
+        top: 17%;
         left: 66%;
         color: transparent;
         background-color: transparent;
@@ -59,9 +69,11 @@
         "></h2>
 
     <!-- Slot machine example -->
-    <div id="casino" style="padding-top:50px;">
+    <div id="casino" style="padding-top:2rem;">
         <div class="content">
-            <h1>吃角子老虎機🐯</h1>
+            <p
+                style="font-family: 'burnfont-1.0'; font-size: 2.7rem"
+            >吃角子老虎機🐯</p>
 
             <div>
                 <div id="casino1" class="slotMachine" style="margin-left: -65px;">
@@ -89,7 +101,11 @@
                 </div>
 
                 <div class="btn-group btn-group-justified" role="group">
-                    <button id="casinoBet" type="button" class="btn btn-primary btn-lg">下注!</button>
+                    <button id="dollar1" type="button" class="btn btn-primary btn-lg">+1</button>
+                    <button id="dollar5" type="button" class="btn btn-primary btn-lg">+5</button>
+                    <button id="dollar10" type="button" class="btn btn-primary btn-lg">+10</button>
+                    <button id="dollar0" type="button" class="btn btn-primary btn-lg">歸一</button>
+                    <!-- <button id="casinoBet" type="button" class="btn btn-primary btn-lg">下注!</button> -->
                 </div>
             </div>
         </div>
@@ -104,48 +120,74 @@
         setBet()
         let count = 0;
         const btnStart = document.querySelector('#casinoStart');
-        const btnBet = document.querySelector('#casinoBet');
+        const btnDemo = document.querySelector('#casinoDemo');
+        // const btnBet = document.querySelector('#casinoBet');
+        const btn_1 = document.querySelector('#dollar1');
+        const btn_5 = document.querySelector('#dollar5');
+        const btn_10 = document.querySelector('#dollar10');
+        const btn_0 = document.querySelector('#dollar0');
         const casino1 = document.querySelector('#casino1');
         const casino2 = document.querySelector('#casino2');
         const casino3 = document.querySelector('#casino3');
         const mCasino1 = new SlotMachine(casino1, {
             active: 0,
-            delay: 500
+            delay: 400
         });
         const mCasino2 = new SlotMachine(casino2, {
             active: 1,
-            delay: 500
+            delay: 400
         });
         const mCasino3 = new SlotMachine(casino3, {
             active: 2,
-            delay: 500
+            delay: 400
         });
     </script>
     <script id="codeScript6">
-        btnBet.addEventListener('click', () => {
-            if (isRunning) return
-            Swal.fire({
-                icon: 'question',
-                width: '80vw',
-                text: '輸入你要下注的金額.',
-                input: 'range',
-                inputAttributes: {
-                    min: 1,
-                    max: 10,
-                    step: 1,
-                },
-                allowOutsideClick: false,
-                inputValue: bet,
-            }).then(name => {
-                bet = parseInt(name.value)
-                if (isNaN(bet) || bet <= 0) {
-                    Swal.fire("？？？", "你必須輸入大於零的數字", "error");
-                    bet = 1
-                    setBet()
-                    return
-                }
-                setBet()
-            })
+        const addBet = (v) => {
+            bet += v
+            setBet()
+        }
+        btn_1.addEventListener('click', () => addBet(1))
+        btn_5.addEventListener('click', () => addBet(5))
+        btn_10.addEventListener('click', () => addBet(10))
+        btn_0.addEventListener('click', () => addBet(-bet+1))
+        // btnBet.addEventListener('click', () => {
+        //     if (isRunning) return
+        //     Swal.fire({
+        //         icon: 'question',
+        //         width: '80vw',
+        //         text: '輸入你要下注的金額.',
+        //         input: 'range',
+        //         inputAttributes: {
+        //             min: 1,
+        //             max: 10,
+        //             step: 1,
+        //         },
+        //         allowOutsideClick: false,
+        //         inputValue: bet,
+        //     }).then(name => {
+        //         bet = parseInt(name.value)
+        //         if (isNaN(bet) || bet <= 0) {
+        //             Swal.fire("？？？", "你必須輸入大於零的數字", "error");
+        //             bet = 1
+        //             setBet()
+        //             return
+        //         }
+        //         setBet()
+        //     })
+        // })
+        btnDemo.addEventListener('click', () => {
+            time1 = Math.random() * 4 + 6 | 0
+            time2 = time1 + (Math.random() * 4 + 2 | 0)
+            time3 = time2 + (Math.random() * 4 + 2 | 0)
+            mCasino1.shuffle(time1);
+            mCasino2.shuffle(time2);
+            mCasino3.shuffle(time3);
+            setInterval(() => {
+                mCasino1.shuffle(time1);
+                mCasino2.shuffle(time2);
+                mCasino3.shuffle(time3);
+            }, 7500)
         })
 
         btnStart.addEventListener('click', () => {
@@ -167,24 +209,71 @@
                     t1 = mCasino1.visibleTile
                     t2 = mCasino2.visibleTile
                     t3 = mCasino3.visibleTile
-                    set = new Set([t1, t2, t3])
-
-                    if ((t1 == t2) && (t2 == t3))
-                        reward = [6, 6, 6, 12, 10][t1]
-                    else if (set.has(0) && set.has(1) && set.has(2))
-                        reward = 5
-                    else if (t1 < 3 && t2 < 3 && t3 < 3)
-                        reward = 2
-                    else if (set.has(3) && set.has(4) && set.size == 3)
-                        reward = 3
-
-                    Swal.fire(reward ? "恭喜中獎" : "銘謝惠顧", "你獲得了＄" + reward * bet, reward ? "success" : "error");
+                    /*
+                        0: 火鍋
+                        1: 紀為
+                        2: 壽司
+                        3: 卡比
+                        4: 吉娃娃
+                    */
+                    if (t1 == t2 && t2 == t3) {
+                        if ( t1 == 0 )
+                            reward = 20
+                        else
+                            reward = 10
+                    } else {
+                        sorted = [t1, t2, t3].sort()
+                        set = new Set([t1, t2, t3])
+                        if (sorted[0] == sorted[1] && sorted[0] == 0 && sorted[2] == 3) {
+                            reward = 6
+                        } else if (sorted[1] == 2 && (sorted[0] == sorted[1] || sorted[1] == sorted[2])) {
+                            reward = 4
+                        } else if (set.has(0) && set.has(1)) {
+                            reward = 2
+                        } else {
+                            reward = 0
+                        }
+                    }
+                    if (reward == 20 || reward == 2) {
+                        Swal.fire({
+                            title: reward == 20 ? "火鍋火鍋火鍋" : "李紀為端火鍋",
+                            width: 1000,
+                            text: reward + "倍！" + "你獲得了＄" + reward * bet,
+                            timer: 10000,
+                            timerProgressBar: true,
+                            html: '<iframe width="600" height="450" src="https://www.youtube.com/embed/072tU1tamd0?rel=0&autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>' +
+                                  '<h2>' + reward + "倍！" + "你獲得了＄" + reward * bet +'</h2>'
+                        });
+                    } else if (reward) {
+                        Swal.fire({
+                            title: "恭喜中獎",
+                            text: reward + "倍！" + "你獲得了＄" + reward * bet,
+                            timer: 5000,
+                            timerProgressBar: true,
+                            padding: '3em',
+                            backdrop: `
+                                rgba(0,0,123,0.4)
+                                url("https://image.cache.storm.mg/media/image/2021/03/05/20210305-031458_U22011_M676060_ca39.gif")
+                            `
+                        });
+                    } else {
+                        Swal.fire({
+                            imageUrl: 'https://filmdaily.co/wp-content/uploads/2020/05/crying-cat-meme-lede.jpg',
+                            imageWidth: 300,
+                            imageHeight: 400,
+                            title: "銘謝惠顧",
+                            text: "你獲得了＄" + reward * bet,
+                            timer: 4000,
+                            timerProgressBar: true,
+                        });
+                    }
                     $("#winAmount").html("你上回贏了：" + reward * bet)
                     isRunning = false
                 }, 1000);
 
             });
         })
+        
     </script>
     <footer></footer>
 </body>
